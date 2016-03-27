@@ -1,0 +1,59 @@
+JoinSpawn: true
+SpawnTPedMsg_me-true_or_false: false
+SpawnTPedMsg_me: 'You tped to SpawnPoint'
+SpawnTPedMsg_other-true_or_false: false
+SpawnTPedMsg_other: 'You tped to SpawnPoint by %Other%'
+Loc:
+  World: ''
+  x: '0.0'
+  y: '0.0'
+  z: '0.0'
+  Yaw: '0.0'
+  Pitch: '0.0'
+#######################################
+JoinInv: true
+Inv:
+  1:
+    Item: BOOK
+    ItemStackNumber: 1
+    ItemName: TEST
+    ItemLore:
+      - test
+      - abcd
+  2:
+    Item: APPLE
+    ItemStackNumber: 55
+    ItemName: Apple
+    ItemLore:
+      - RINGO
+      - abcd
+  3:
+  4:
+  5:
+  6:
+  7:
+  8:
+  9:
+Inv_null_erro: false
+LeaveInv_clear: true
+#######################################
+JoinMessage-true_or_false: true
+JoinMessage:
+- '&a%Player% joind.'
+JoinMessage_user:
+  admin:
+  - '&aServer admin joind.'
+JoinMessage_tell-true_or_false: true
+JoinMessage_tell:
+- '&bWelcome to A Minecraft Server!'
+JoinMessage_to_came_user: true
+#######################################
+LeaveMessage-true_or_false: true
+LeaveMessage:
+- '&a%Player% leaved.'
+LeaveMessage_user:
+  admin:
+  - '&aServer admin leaved.'
+LeaveMessage_to_came_user: false
+#######################################
+Debug-mode: false
