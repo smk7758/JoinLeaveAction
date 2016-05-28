@@ -33,7 +33,11 @@ public class Main extends JavaPlugin implements Listener {
 	String ChatPrefix = ChatColor.YELLOW + "[" + ChatColor.GREEN + PluginName + ChatColor.YELLOW + "] " + ChatColor.WHITE;
 	String ErroPrefix = ChatColor.WHITE + "[" + ChatColor.RED + PluginName + ChatColor.WHITE + "] " + ChatColor.WHITE;
 	Location loc;
-	Load_config loadconf; //インスタンス化して読み込む
+	Load_config loadconf = new Load_config(); //インスタンス化して読み込む
+	File file_config = new File(getDataFolder() + File.separator + "config.yml");
+	public FileConfiguration conf = YamlConfiguration.loadConfiguration(file_config);
+	public File file = new File(getDataFolder() + File.separator + "isPlayerFirstJoin.yml");
+	public FileConfiguration loadfile = YamlConfiguration.loadConfiguration(file);
 
 	public void onEnable()
 	{
@@ -77,11 +81,6 @@ public class Main extends JavaPlugin implements Listener {
      * @param file ファイル指定
      * @param save 上書きをするかリセットするか(trueで上書き)
      */
-	File file_config = new File(getDataFolder() + File.separator + "config.yml");
-	public FileConfiguration conf = YamlConfiguration.loadConfiguration(file_config);
-	public File file = new File(getDataFolder() + File.separator + "isPlayerFirstJoin.yml");
-	public FileConfiguration loadfile = YamlConfiguration.loadConfiguration(file);
-
     public void SettingFiles(FileConfiguration fileconfiguration, File file, boolean save)
     {
         if(!file.exists() || save)
@@ -93,6 +92,7 @@ public class Main extends JavaPlugin implements Listener {
             }
         }
     }
+
 
 	public void setConfig()
 	{
