@@ -1,0 +1,53 @@
+name: JoinLeaveAction
+main: my.smk.plugin.jla.Main
+version: 0.2.2.1
+author: smk7758
+website(my): http://smk7758.web.fc2.com/
+website(plugin): none
+permissions:
+  JoinLeaveAction.*:
+    description: Gives the user access to all command.
+    children:
+      JoinLeaveAction.cmd: true
+    default: false
+  JoinLeaveAction.cmd.*:
+    description: Allows the JoinLeaveAction's commands.
+    default: false
+    children:
+      JoinLeaveAction.cmd.setspawn: true
+      JoinLeaveAction.cmd.spawn.me: true
+      JoinLeaveAction.cmd.spawn.other: true
+      JoinLeaveAction.cmd.reload: true
+      JoinLeaveAction.cmd.test: true
+  JoinLeaveAction.cmd.setspawn:
+    description: Allows the /setspawn command.
+    default: false
+  JoinLeaveAction.cmd.spawn.*:
+    description: Allows the /spawn [player] command.
+    default: false
+    children:
+      JoinLeaveAction.cmd.spawn.me: true
+      JoinLeaveAction.cmd.spawn.other: true
+  JoinLeaveAction.cmd.spawn.me:
+    description: Allows the /spawn command.
+    default: false
+  JoinLeaveAction.cmd.spawn.other:
+    description: Allows the /spawn [player] command.
+    default: false
+  JoinLeaveAction.cmd.reload:
+    description: Allows the reload.
+    default: false
+  JoinLeaveAction.cmd.test:
+    description: Allows the test.
+    default: false
+commands:
+  JoinLeaveAction:
+    description: JoinLeaveAction.
+    permission-message: You don't have <permission>
+    aliases: jla
+  setspawn:
+    description: You can setspawn.
+    permission-message: You don't have <permission>
+  spawn:
+    description: You go to spawn.
+    permission-message: You don't have <permission>

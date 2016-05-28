@@ -1,0 +1,95 @@
+##Others
+Debug_mode: false
+#######################################
+##FristJoin
+FirstJoin: true
+FirstJoin_use_YAML: true
+#######################################
+##Spawn
+#TP
+SpawnLoc:
+  World: ''
+  x: '0.0'
+  y: '0.0'
+  z: '0.0'
+  Yaw: '0.0'
+  Pitch: '0.0'
+SpawnTPMsg_me: false
+SpawnTPMsg_me_contents: 'You tped to SpawnPoint'
+SpawnTPMsg_other: false
+SpawnTPMsg_other_contents: 'You tped to SpawnPoint by %Other%'
+#Join
+JoinSpawn: true
+#FirstJoin
+FirstJoinSpawn: true
+FirstJoinLoc:
+  World: ''
+  x: '0.0'
+  y: '0.0'
+  z: '0.0'
+  Yaw: '0.0'
+  Pitch: '0.0'
+#######################################
+##Inventry(Inv)
+#FirstJoin
+FirstJoinOnly: false
+#Join
+JoinInv: true
+JoinInv_contents:
+  1:
+    Item: BOOK
+    ItemStackNumber: 1
+    ItemName: TEST
+    ItemLore:
+      - test
+      - abcd
+  2:
+    Item: APPLE
+    ItemStackNumber: 55
+    ItemName: Apple
+    ItemLore:
+      - RINGO
+      - abcd
+  3:
+  4:
+  5:
+  6:
+  7:
+  8:
+  9:
+JoinInv_null_erro: false
+#Leave
+LeaveInv_clear: true
+#######################################
+##Message(Msg)
+#FirstJoin
+FirstJoinMessage: true
+FirstJoinMessage_contents:
+- '&a%Player% joind at the first time!'
+FirstJoinMessage_users:
+  admin:
+  - '&aServer admin joind at the first time!'
+FirstJoinMessage_tell: true
+FirstJoinMessage_tell_contents:
+- '&bWelcome to the Minecraft Server at the first time.'
+FirstJoinMessage_to_came_user: true
+#Join
+JoinMessage: true
+JoinMessage_contents:
+- '&a%Player% joind.'
+JoinMessage_users:
+  admin:
+  - '&aServer admin joind.'
+JoinMessage_tell: true
+JoinMessage_tell_contents:
+- '&bWelcome to A Minecraft Server!'
+JoinMessage_to_came_user: true
+#Leave
+LeaveMessage: true
+LeaveMessage_contents:
+- '&a%Player% leaved.'
+LeaveMessage_users:
+  admin:
+  - '&aServer admin leaved.'
+LeaveMessage_to_came_user: false
+#######################################
