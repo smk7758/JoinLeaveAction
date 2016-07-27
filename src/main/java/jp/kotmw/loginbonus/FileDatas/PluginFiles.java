@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import my.smk.plugin.jla.Main;
-
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class PluginFiles {

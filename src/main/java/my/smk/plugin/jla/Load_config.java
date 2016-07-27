@@ -1,7 +1,6 @@
 package my.smk.plugin.jla;
 
 import java.util.List;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -10,84 +9,82 @@ import my.smk.plugin.jla.Main;
 
 public class Load_config
 {
-	Load_config plugin;
-	Main Main;
 	String ChatPrefix = ChatColor.YELLOW + "[" + ChatColor.GREEN + Bukkit.getName() + ChatColor.YELLOW + "] " + ChatColor.WHITE;
-	String ErroPrefix = ChatColor.WHITE + "[" + ChatColor.RED + Bukkit.getName() + ChatColor.WHITE + "] " + ChatColor.WHITE;
+	static String ErroPrefix = ChatColor.WHITE + "[" + ChatColor.RED + Bukkit.getName() + ChatColor.WHITE + "] " + ChatColor.WHITE;
 
-	public boolean Debug_mode = Main.plugin.getConfigFile().getBoolean("Debug_mode");
-	public boolean FirstJoin = Main.plugin.getConfigFile().getBoolean("FirstJoin");
-	public boolean FirstJoin_use_YAML = Main.plugin.getConfigFile().getBoolean("FirstJoin_use_YAML");
-//	public boolean FirstJoin_use_UUID = Main.plugin.getConfigFile().getBoolean("FirstJoin_use_UUID");
-	public Location SpawnLoc()
+	public static boolean Debug_mode = Main.getConfigFile().getBoolean("Debug_mode");
+	public static boolean FirstJoin = Main.getConfigFile().getBoolean("FirstJoin");
+	public static boolean FirstJoin_use_YAML = Main.getConfigFile().getBoolean("FirstJoin_use_YAML");
+//	public static boolean FirstJoin_use_UUID = Main.getConfigFile().getBoolean("FirstJoin_use_UUID");
+	public static Location SpawnLoc()
 	{
 		Location loc;
-		World pl_world = Bukkit.getServer().getWorld(Main.plugin.getConfigFile().getString("SpawnLoc.World"));
-		double pl_x = Main.plugin.getConfigFile().getDouble("SpawnLoc.x");
-		double pl_y = Main.plugin.getConfigFile().getDouble("SpawnLoc.y");
-		double pl_z = Main.plugin.getConfigFile().getDouble("SpawnLoc.z");
-		float pl_Yaw = Main.plugin.getConfigFile().getInt("SpaawnLoc.Yaw");
-		float pl_Pitch = Main.plugin.getConfigFile().getInt("SpawnLoc.Pitch");
+		World pl_world = Bukkit.getServer().getWorld(Main.getConfigFile().getString("SpawnLoc.World"));
+		double pl_x = Main.getConfigFile().getDouble("SpawnLoc.x");
+		double pl_y = Main.getConfigFile().getDouble("SpawnLoc.y");
+		double pl_z = Main.getConfigFile().getDouble("SpawnLoc.z");
+		float pl_Yaw = Main.getConfigFile().getInt("SpaawnLoc.Yaw");
+		float pl_Pitch = Main.getConfigFile().getInt("SpawnLoc.Pitch");
 		if (pl_world == null)
 		{
-			Bukkit.getConsoleSender().sendMessage(ErroPrefix + "Main.plugin.getConfigFile() - World is Null.");
+			Bukkit.getConsoleSender().sendMessage(ErroPrefix + "Main.getConfigFile() - World is Null.");
 		}
 		loc = new Location(pl_world, pl_x, pl_y, pl_z, pl_Yaw, pl_Pitch);
 		return loc;
 	}
-	public boolean SpawnTPMsg_me = Main.plugin.getConfigFile().getBoolean("SpawnTPMsg_me");
-	public String SpawnTPMsg_me_contents = Main.plugin.getConfigFile().getString("SpawnTPMsg_me_contents");
-	public boolean SpawnTPMsg_other = Main.plugin.getConfigFile().getBoolean("SpawnTPMsg_other");
-	public String SpawnTPMsg_other_contents = Main.plugin.getConfigFile().getString("SpawnTPMsg_other_contents");
-	public boolean JoinSpawn = Main.plugin.getConfigFile().getBoolean("JoinSpawn");
-	public boolean FirstJoinSpawn = Main.plugin.getConfigFile().getBoolean("FirstJoinSpawn");
-	public Location FirstJoinLoc()
+	public static boolean SpawnTPMsg_me = Main.getConfigFile().getBoolean("SpawnTPMsg_me");
+	public static String SpawnTPMsg_me_contents = Main.getConfigFile().getString("SpawnTPMsg_me_contents");
+	public static boolean SpawnTPMsg_other = Main.getConfigFile().getBoolean("SpawnTPMsg_other");
+	public static String SpawnTPMsg_other_contents = Main.getConfigFile().getString("SpawnTPMsg_other_contents");
+	public static boolean JoinSpawn = Main.getConfigFile().getBoolean("JoinSpawn");
+	public static boolean FirstJoinSpawn = Main.getConfigFile().getBoolean("FirstJoinSpawn");
+	public static Location FirstJoinLoc()
 	{
 		Location loc;
-		World pl_world = Bukkit.getServer().getWorld(Main.plugin.getConfigFile().getString("Loc.World"));
-		double pl_x = Main.plugin.getConfigFile().getDouble("Loc.x");
-		double pl_y = Main.plugin.getConfigFile().getDouble("Loc.y");
-		double pl_z = Main.plugin.getConfigFile().getDouble("Loc.z");
-		float pl_Yaw = Main.plugin.getConfigFile().getInt("Loc.Yaw");
-		float pl_Pitch = Main.plugin.getConfigFile().getInt("Loc.Pitch");
+		World pl_world = Bukkit.getServer().getWorld(Main.getConfigFile().getString("Loc.World"));
+		double pl_x = Main.getConfigFile().getDouble("Loc.x");
+		double pl_y = Main.getConfigFile().getDouble("Loc.y");
+		double pl_z = Main.getConfigFile().getDouble("Loc.z");
+		float pl_Yaw = Main.getConfigFile().getInt("Loc.Yaw");
+		float pl_Pitch = Main.getConfigFile().getInt("Loc.Pitch");
 		if (pl_world == null)
 		{
-			Bukkit.getConsoleSender().sendMessage(ErroPrefix + "Main.plugin.getConfigFile() - World is Null.");
+			Bukkit.getConsoleSender().sendMessage(ErroPrefix + "Main.getConfigFile() - World is Null.");
 		}
 		loc = new Location(pl_world, pl_x, pl_y, pl_z, pl_Yaw, pl_Pitch);
 		return loc;
 	}
-	public boolean FirstJoinOnly = Main.plugin.getConfigFile().getBoolean("FirstJoinOnly");
-	public boolean JoinInv = Main.plugin.getConfigFile().getBoolean("JoinInv");
+	public static boolean FirstJoinOnly = Main.getConfigFile().getBoolean("FirstJoinOnly");
+	public static boolean JoinInv = Main.getConfigFile().getBoolean("JoinInv");
 //JoinInv_contentsはパス(増大してい行く奴)
-	public boolean JoinInv_null_erro = Main.plugin.getConfigFile().getBoolean("JoinInv_null_erro");
-	public boolean LeaveInv_clear = Main.plugin.getConfigFile().getBoolean("LeaveInv_clear");
-	public boolean FirstJoinMessage = Main.plugin.getConfigFile().getBoolean("FirstJoinMessage");
-	public List<String> FirstJoinMessage_contents = Main.plugin.getConfigFile().getStringList("FirstJoinMessage_contents");
-	public List<String> FirstJoinMessage_users(String player)
+	public static boolean JoinInv_null_erro = Main.getConfigFile().getBoolean("JoinInv_null_erro");
+	public static boolean LeaveInv_clear = Main.getConfigFile().getBoolean("LeaveInv_clear");
+	public static boolean FirstJoinMessage = Main.getConfigFile().getBoolean("FirstJoinMessage");
+	public static List<String> FirstJoinMessage_contents = Main.getConfigFile().getStringList("FirstJoinMessage_contents");
+	public static List<String> FirstJoinMessage_users(String player)
 	{
-		return Main.plugin.getConfigFile().getStringList("FirstJoinMessage_users." + player);
+		return Main.getConfigFile().getStringList("FirstJoinMessage_users." + player);
 	}
 //FirstJoinMessage_usersはプレーヤー名が必要なため。
-	public boolean FirstJoinMessage_tell = Main.plugin.getConfigFile().getBoolean("FirstJoinMessage_tell");
-	public List<String> FirstJoinMessage_tell_contents = Main.plugin.getConfigFile().getStringList("FirstJoinMessage_tell_contents");
-	public boolean JoinMessage = Main.plugin.getConfigFile().getBoolean("JoinMessage");
-	public List<String> JoinMessage_contents = Main.plugin.getConfigFile().getStringList("JoinMessage_contents");
-	public List<String> JoinMessage_users(String player)
+	public static boolean FirstJoinMessage_tell = Main.getConfigFile().getBoolean("FirstJoinMessage_tell");
+	public static List<String> FirstJoinMessage_tell_contents = Main.getConfigFile().getStringList("FirstJoinMessage_tell_contents");
+	public static boolean JoinMessage = Main.getConfigFile().getBoolean("JoinMessage");
+	public static List<String> JoinMessage_contents = Main.getConfigFile().getStringList("JoinMessage_contents");
+	public static List<String> JoinMessage_users(String player)
 	{
-		return Main.plugin.getConfigFile().getStringList("JoinMessage_users." + player);
+		return Main.getConfigFile().getStringList("JoinMessage_users." + player);
 	}
-	public boolean FirstJoinMessage_to_came_user = Main.plugin.getConfigFile().getBoolean("FirstJoinMessage_to_came_user");
+	public static boolean FirstJoinMessage_to_came_user = Main.getConfigFile().getBoolean("FirstJoinMessage_to_came_user");
 //JoinMessage_usersはプレーヤー名が必要なため。
-	public boolean JoinMessage_tell = Main.plugin.getConfigFile().getBoolean("JoinMessage_tell");
-	public List<String> JoinMessage_tell_contents = Main.plugin.getConfigFile().getStringList("JoinMessage_tell_contents");
-	public boolean JoinMessage_to_came_user = Main.plugin.getConfigFile().getBoolean("JoinMessage_to_came_user");
-	public boolean LeaveMessage = Main.plugin.getConfigFile().getBoolean("LeaveMessage");
-	public List<String> LeaveMessage_contents = Main.plugin.getConfigFile().getStringList("LeaveMessage_contents");
-	public List<String> LeaveMessage_users(String player)
+	public static boolean JoinMessage_tell = Main.getConfigFile().getBoolean("JoinMessage_tell");
+	public static List<String> JoinMessage_tell_contents = Main.getConfigFile().getStringList("JoinMessage_tell_contents");
+	public static boolean JoinMessage_to_came_user = Main.getConfigFile().getBoolean("JoinMessage_to_came_user");
+	public static boolean LeaveMessage = Main.getConfigFile().getBoolean("LeaveMessage");
+	public static List<String> LeaveMessage_contents = Main.getConfigFile().getStringList("LeaveMessage_contents");
+	public static List<String> LeaveMessage_users(String player)
 	{
-		return Main.plugin.getConfigFile().getStringList("LeaveMessage_users." + player);
+		return Main.getConfigFile().getStringList("LeaveMessage_users." + player);
 	}
 //LeaveMessage_usersはプレーヤー名が必要なため。
-	public boolean LeaveMessage_to_came_user = Main.plugin.getConfigFile().getBoolean("LeaveMessage_to_came_user");
+	public static boolean LeaveMessage_to_came_user = Main.getConfigFile().getBoolean("LeaveMessage_to_came_user");
 }

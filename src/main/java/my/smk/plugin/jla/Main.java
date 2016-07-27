@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.io.File;
 import java.io.IOException;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -31,7 +32,7 @@ import my.smk.plugin.jla.Load_config;
 public class Main extends JavaPlugin implements Listener
 {
 //	public final Logger log = Logger.getLogger("Minecraft");
-	public Main plugin;
+	public static Main plugin;
 //	File file_config = new File(folder + "config.yml");
 //	public FileConfiguration conf = YamlConfiguration.loadConfiguration(file_config);
 	static FileConfiguration conf = null;
@@ -46,7 +47,6 @@ public class Main extends JavaPlugin implements Listener
 	Location loc;
 	static Server server = null;
 	public String filepath = getDataFolder() + File.separator;
-	Load_config loadconf;
 
 	public void onEnable()
 	{
@@ -68,7 +68,7 @@ public class Main extends JavaPlugin implements Listener
 			setConfig();
 		}
 		saveDefaultConfig();
-		reloadConfig();
+		reload_config();
 		//Make isPlayerFirstJoin.yml.Start
 		if (!this.file.exists())
 		{
@@ -85,31 +85,15 @@ public class Main extends JavaPlugin implements Listener
 
 	public void onDisable()
 	{
-//なし
 	}
 
-/*	public static Reader getFileReader(Plugin plugin, String filename) throws IOException {
-		File file = new File(plugin.getDataFolder(), filename);
-		if (!file.exists()) plugin.saveResource(filename, false);
-		return new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
-	}
-
-	public static FileConfiguration getConfig(Plugin plugin, String filename) throws IOException, InvalidConfigurationException {
-		Reader reader = getFileReader(plugin, filename);
-		FileConfiguration conf = new YamlConfiguration();
-		conf.load(reader);
-		return conf;
-	}
-	*/
-
-	public FileConfiguration getConfigFile()
+	public static FileConfiguration getConfigFile()
 	{
 		FileConfiguration conf = new YamlConfiguration();
-		File file = new File(getDataFolder(), "config.yml");
+		File file = new File(plugin.getDataFolder() + File.separator, "config.yml");
 		try {
-			conf.load(file);
+		conf.load(file);
 		} catch (IOException | InvalidConfigurationException e) {
-			// TODO 自動生成された catch ブロック
 			e.printStackTrace();
 		}
 		return conf;
@@ -142,7 +126,7 @@ public class Main extends JavaPlugin implements Listener
 		getConfig().set("SpawnLoc.z", pl_z);
 		getConfig().set("SpawnLoc.Yaw", pl_Yaw);
 		getConfig().set("SpawnLoc.Pitch", pl_Pitch);
-		if (loadconf.plugin.Debug_mode == true)
+		if (Load_config.Debug_mode == true)
 		{
 			player.sendMessage("Player:" + player.toString());
 			player.sendMessage("World:" + pl_world);
@@ -163,13 +147,13 @@ public class Main extends JavaPlugin implements Listener
 			String ItemName = getConfig().getString("Inv." + i + ".ItemName");
 			List<String> ItemLore = getConfig().getStringList("Inv." + i + ".ItemLore");
 			Material ItemMaterial = Material.getMaterial(Item);
-			if (loadconf.plugin.Debug_mode == true)
+			if (Load_config.Debug_mode == true)
 			{
 				player.sendMessage(this.ChatPrefix + "Item:"+Item+" ItemStackNumber:"+ItemStackNumber+" ItemName:"+ItemName+" ItemLore:"+ItemLore+" ItemMaterial:"+ItemMaterial);
 			}
 			if (Item == null || ItemStackNumber == 0 || ItemMaterial == null)
 			{
-				if (loadconf.plugin.JoinInv_null_erro)
+				if (Load_config.JoinInv_null_erro)
 				{
 					Bukkit.getConsoleSender().sendMessage(this.ErroPrefix + "config.yml - Inv's \""+i+"\" is Null.");
 				}
@@ -195,7 +179,7 @@ public class Main extends JavaPlugin implements Listener
 				ItemStack.setItemMeta(ItemMeta);
 			}
 			int SlotNumber = i - 1;
-			if (loadconf.plugin.Debug_mode)
+			if (Load_config.Debug_mode)
 			{
 				player.sendMessage(this.ChatPrefix + "SlotNumber: " + SlotNumber);
 				if (ItemStack.getItemMeta().getLore() == null)
@@ -214,7 +198,7 @@ public class Main extends JavaPlugin implements Listener
 		String sender_s = sender.getName();
 		if (sender == null || sender_s == null)
 		{
-			if (loadconf.plugin.Debug_mode)
+			if (Load_config.Debug_mode)
 			{
 				Bukkit.getConsoleSender().sendMessage(this.ErroPrefix + "Player is Null.");
 				if (!(sender instanceof ConsoleCommandSender))
@@ -225,12 +209,12 @@ public class Main extends JavaPlugin implements Listener
 			return;
 		}
 	//user_msgが無だったら存在しない。
-		if (loadconf.plugin.JoinMessage_users(sender_s).isEmpty())
+		if (Load_config.JoinMessage_users(sender_s).isEmpty())
 		{
 			//共通メッセージをやる所
-			if (loadconf.plugin.JoinMessage_contents == null)
+			if (Load_config.JoinMessage_contents == null)
 			{
-				if (loadconf.plugin.Debug_mode)
+				if (Load_config.Debug_mode)
 				{
 					Bukkit.getConsoleSender().sendMessage(this.ErroPrefix + "config.yml - Player is Null.");
 				}
@@ -238,12 +222,12 @@ public class Main extends JavaPlugin implements Listener
 			}
 			for (Player online_player : getServer().getOnlinePlayers())
 			{
-				if (loadconf.plugin.JoinMessage_to_came_user) //来た人(JoinPlayer)にメッセージをやるか。
+				if (Load_config.JoinMessage_to_came_user) //来た人(JoinPlayer)にメッセージをやるか。
 				{
 					if (online_player == sender) continue;
 					//鯖にいるプレーヤーが来た人と同じになったらその人を飛ばす。
 				}
-				for (String msg : loadconf.plugin.JoinMessage_contents)
+				for (String msg : Load_config.JoinMessage_contents)
 				{
 					msg = changeMsg(msg, sender);
 					online_player.sendMessage(msg);
@@ -252,13 +236,13 @@ public class Main extends JavaPlugin implements Listener
 		} else {
 			for (Player online_player : getServer().getOnlinePlayers())
 			{
-				if (!loadconf.plugin.JoinMessage_to_came_user) //来た人にメッセージをやるか。
+				if (!Load_config.JoinMessage_to_came_user) //来た人にメッセージをやるか。
 				{
 					if (online_player == sender) continue;
 					//鯖にいるプレーヤーが来た人と同じになったらその人を飛ばす。
 				}
 				//user_msgをやる所
-				for (String msg : loadconf.plugin.JoinMessage_users(sender_s))
+				for (String msg : Load_config.JoinMessage_users(sender_s))
 				{
 					msg = changeMsg(msg, sender);
 					online_player.sendMessage(msg);
@@ -272,7 +256,7 @@ public class Main extends JavaPlugin implements Listener
 		String sender_s = sender.getName();
 		if (sender == null || sender_s == null)
 		{
-			if (loadconf.plugin.Debug_mode)
+			if (Load_config.Debug_mode)
 			{
 				Bukkit.getConsoleSender().sendMessage(this.ErroPrefix + "Player is Null.");
 				if (!(sender instanceof ConsoleCommandSender))
@@ -283,12 +267,12 @@ public class Main extends JavaPlugin implements Listener
 			return;
 		}
 	//user_msgが無だったら存在しない。
-		if (loadconf.plugin.LeaveMessage_contents.isEmpty())
+		if (Load_config.LeaveMessage_contents.isEmpty())
 		{
 			//共通メッセージをやる所
-			if (loadconf.plugin.LeaveMessage_contents == null)
+			if (Load_config.LeaveMessage_contents == null)
 			{
-				if (loadconf.plugin.Debug_mode)
+				if (Load_config.Debug_mode)
 				{
 					Bukkit.getConsoleSender().sendMessage(this.ErroPrefix + "config.yml - Player is Null.");
 				}
@@ -296,11 +280,11 @@ public class Main extends JavaPlugin implements Listener
 			}
 			for (Player online_player : getServer().getOnlinePlayers())
 			{
-				if (!loadconf.plugin.LeaveMessage_to_came_user) //来た人にメッセージをやるか。
+				if (!Load_config.LeaveMessage_to_came_user) //来た人にメッセージをやるか。
 				{
 					if (online_player == sender) continue;
 				}
-				for (String msg : loadconf.plugin.JoinMessage_contents)
+				for (String msg : Load_config.JoinMessage_contents)
 				{
 					msg = changeMsg(msg, sender);
 					online_player.sendMessage(msg);
@@ -310,11 +294,11 @@ public class Main extends JavaPlugin implements Listener
 			//user_msgをやる所
 			for (Player online_player : getServer().getOnlinePlayers())
 			{
-				if (!loadconf.plugin.LeaveMessage_to_came_user) //来た人にメッセージをやるか。
+				if (!Load_config.LeaveMessage_to_came_user) //来た人にメッセージをやるか。
 				{
 					if (online_player == sender) continue;
 				}
-				for (String msg : loadconf.plugin.LeaveMessage_contents)
+				for (String msg : Load_config.LeaveMessage_contents)
 				{
 					msg = changeMsg(msg, sender);
 					online_player.sendMessage(msg);
@@ -325,7 +309,7 @@ public class Main extends JavaPlugin implements Listener
 
 	public void doJLAJoinTell(CommandSender sender)
 	{
-		for (String msg : loadconf.plugin.JoinMessage_tell_contents)
+		for (String msg : Load_config.JoinMessage_tell_contents)
 		{
 			msg = changeMsg(msg, sender);
 			sender.sendMessage(msg);
@@ -346,12 +330,12 @@ public class Main extends JavaPlugin implements Listener
 
 	public boolean isPlayerFirstJoin(Player player)
 	{
-		if (!loadconf.plugin.FirstJoin_use_YAML && !player.hasPlayedBefore())
+		if (!Load_config.FirstJoin_use_YAML && !player.hasPlayedBefore())
 		{//以前プレイしたことがある時
-			if (loadconf.plugin.Debug_mode) player.sendMessage("isPlayerFirstJoin1");
+			if (Load_config.Debug_mode) player.sendMessage("isPlayerFirstJoin1");
 			return true;
 		}
-		if (loadconf.plugin.FirstJoin_use_YAML)
+		if (Load_config.FirstJoin_use_YAML)
 		{
 			List<String> players = loadfile.getStringList("Players");
 			for (String s : players)
@@ -361,7 +345,7 @@ public class Main extends JavaPlugin implements Listener
 					return false;
 				}
 			}
-			if (loadconf.plugin.Debug_mode) player.sendMessage("isPlayerFirstJoin2");
+			if (Load_config.Debug_mode) player.sendMessage("isPlayerFirstJoin2");
 			players.add(player.getName());//Firstのプレーヤーを追加
 			loadfile.set("Players",players);
 			try {
@@ -371,7 +355,7 @@ public class Main extends JavaPlugin implements Listener
 			}
 			return true;
 		}
-		if (loadconf.plugin.Debug_mode) player.sendMessage("isPlayerFirstJoin == false");
+		if (Load_config.Debug_mode) player.sendMessage("isPlayerFirstJoin == false");
 		return false;
 	}
 
@@ -380,7 +364,7 @@ public class Main extends JavaPlugin implements Listener
 		String sender_s = sender.getName();
 		if (sender == null || sender_s == null)
 		{
-			if (loadconf.plugin.Debug_mode)
+			if (Load_config.Debug_mode)
 			{
 				Bukkit.getConsoleSender().sendMessage(this.ErroPrefix + "Player is Null.");
 				if (!(sender instanceof ConsoleCommandSender))
@@ -391,22 +375,22 @@ public class Main extends JavaPlugin implements Listener
 			return;
 		}
 	//user_msgが無だったら存在しない。
-		if (loadconf.plugin.FirstJoinMessage_users(sender_s).isEmpty())
+		if (Load_config.FirstJoinMessage_users(sender_s).isEmpty())
 		{
 			//共通メッセージをやる所
-			if (loadconf.plugin.FirstJoinMessage_contents == null)
+			if (Load_config.FirstJoinMessage_contents == null)
 			{
-				if (loadconf.plugin.Debug_mode) Bukkit.getConsoleSender().sendMessage(this.ErroPrefix + "config.yml - Player is Null.");
+				if (Load_config.Debug_mode) Bukkit.getConsoleSender().sendMessage(this.ErroPrefix + "config.yml - Player is Null.");
 				return;
 			}
 			for (Player online_player : getServer().getOnlinePlayers())
 			{
-				if (!loadconf.plugin.FirstJoinMessage_to_came_user) //来た人にメッセージをやるか。
+				if (!Load_config.FirstJoinMessage_to_came_user) //来た人にメッセージをやるか。
 				{
 					if (online_player == sender) continue;
 					//鯖にいるプレーヤーが来た人と同じになったらその人を飛ばす。
 				}
-				for (String msg : loadconf.plugin.FirstJoinMessage_contents)
+				for (String msg : Load_config.FirstJoinMessage_contents)
 				{
 					msg = changeMsg(msg, sender);
 					online_player.sendMessage(msg);
@@ -416,12 +400,12 @@ public class Main extends JavaPlugin implements Listener
 			//user_msgをやる所
 			for (Player online_player : getServer().getOnlinePlayers())
 			{
-				if (!loadconf.plugin.FirstJoinMessage_to_came_user) //来た人にメッセージをやるか。
+				if (!Load_config.FirstJoinMessage_to_came_user) //来た人にメッセージをやるか。
 				{
 					if (online_player == sender) continue;
 					//鯖にいるプレーヤーが来た人と同じになったらその人を飛ばす。
 				}
-				for (String msg : loadconf.plugin.FirstJoinMessage_users(sender_s))
+				for (String msg : Load_config.FirstJoinMessage_users(sender_s))
 				{
 					msg = changeMsg(msg, sender);
 					online_player.sendMessage(msg);
@@ -432,7 +416,7 @@ public class Main extends JavaPlugin implements Listener
 
 	public void doJLAFirstJoinTell(CommandSender sender)
 	{
-		for (String msg : loadconf.plugin.FirstJoinMessage_tell_contents)
+		for (String msg : Load_config.FirstJoinMessage_tell_contents)
 		{
 			msg = changeMsg(msg, sender);
 			sender.sendMessage(msg);
@@ -454,221 +438,224 @@ public class Main extends JavaPlugin implements Listener
 	{
 		if (cmd.getName().equalsIgnoreCase("setspawn"))
 		{
-			if (sender instanceof Player)
+			if (!(sender instanceof Player))
 			{
-				if (sender.hasPermission("JoinLeaveAction.cmd.setspawn"))
-				{
-					Player player = (Player)sender;
-					setSpawnLoc(player);
-					saveConfig();
-					reloadConfig();
-					sender.sendMessage(this.ChatPrefix + "Spawn is setted.");
-					return true;
-				} else {
-					sender.sendMessage(this.ErroPrefix + "You don't have Permission.");
-					return false;
-				}
-			} else {
 				sender.sendMessage(this.ErroPrefix + "You have to send from Player.");
+				return false;
 			}
+			if (!sender.hasPermission("JoinLeaveAction.cmd.setspawn"))
+			{
+				sender.sendMessage(this.ErroPrefix + "You don't have Permission.");
+				return false;
+			}
+			Player player = (Player)sender;
+			setSpawnLoc(player);
+			saveConfig();
+			reloadConfig();
+			sender.sendMessage(this.ChatPrefix + "Spawn is setted.");
+			return true;
 		} else if (cmd.getName().equalsIgnoreCase("spawn"))
 		{
 			if (args.length == 0)
 			{
-				if (sender instanceof Player)
+				if (!(sender instanceof Player))
 				{
-					if (sender.hasPermission("JoinLeaveAction.cmd.spawn.me"))
-					{
-						Player player = (Player)sender;
-						if (loadconf.plugin.Debug_mode) sender.sendMessage(this.ChatPrefix + this.loc.toString());
-						if (loadconf.plugin.SpawnLoc().getWorld() == null) return false;
-						player.teleport(this.loc);
-						if (loadconf.plugin.SpawnTPMsg_me)
-						{
-							String SpawnTPedMsg_me = loadconf.plugin.SpawnTPMsg_me_contents;
-							if (SpawnTPedMsg_me != null)
-							{
-								SpawnTPedMsg_me = changeMsg(SpawnTPedMsg_me, sender);
-								sender.sendMessage(this.ChatPrefix + SpawnTPedMsg_me);
-							}
-						}
-						return true;
-					} else {
-						sender.sendMessage(this.ErroPrefix + "You don't have Permission.");
-						return false;
-					}
-				} else {
+					sender.sendMessage(this.ErroPrefix + "You don't have Permission.");
+					return false;
+				}
+				if (!sender.hasPermission("JoinLeaveAction.cmd.spawn.me"))
+				{
 					Bukkit.getConsoleSender().sendMessage(this.ErroPrefix + "You have to send from Player.");
 					return false;
 				}
+				Player player = (Player)sender;
+				if (Load_config.Debug_mode) sender.sendMessage(this.ChatPrefix + this.loc.toString());
+				if (Load_config.SpawnLoc().getWorld() == null) return false;
+				player.teleport(this.loc);
+				if (Load_config.SpawnTPMsg_me)
+				{
+					String SpawnTPedMsg_me = Load_config.SpawnTPMsg_me_contents;
+					if (SpawnTPedMsg_me != null)
+					{
+						SpawnTPedMsg_me = changeMsg(SpawnTPedMsg_me, sender);
+						sender.sendMessage(this.ChatPrefix + SpawnTPedMsg_me);
+					}
+				}
+				return true;
 			} else {
 				@SuppressWarnings("deprecation")
 				Player player = Bukkit.getPlayer(args[0]);
-				if (player != null)
+				if (sender.hasPermission("JoinLeaveAction.cmd.spawn.other") || !(sender instanceof Player))
 				{
-					if (sender.hasPermission("JoinLeaveAction.cmd.spawn.other") || !(sender instanceof Player))
-					{
-						if (loadconf.plugin.Debug_mode == true)
-						{
-							player.sendMessage(this.ChatPrefix + loc.toString());
-						}
-						if (loadconf.plugin.SpawnLoc().getWorld() == null) return false;
-						player.teleport(this.loc);
-						if (loadconf.plugin.SpawnTPMsg_other)
-						{
-							String SpawnTPedMsg_other = loadconf.plugin.SpawnTPMsg_other_contents;
-							if (SpawnTPedMsg_other != null)
-							{
-								SpawnTPedMsg_other = changeMsg(SpawnTPedMsg_other, sender);
-								sender.sendMessage(this.ChatPrefix + SpawnTPedMsg_other);
-							}
-						}
-						return true;
-					} else {
-							sender.sendMessage("You don't have Permission.");
-					}
-				} else {
+					sender.sendMessage("You don't have Permission.");
+					return false;
+				}
+				if (player == null)
+				{
 					sender.sendMessage(this.ErroPrefix+ "That player dose not exsist.");
 					return false;
 				}
+				if (Load_config.Debug_mode == true)
+				{
+					player.sendMessage(this.ChatPrefix + loc.toString());
+				}
+				if (Load_config.SpawnLoc().getWorld() == null) return false;
+				player.teleport(this.loc);
+				if (Load_config.SpawnTPMsg_other)
+				{
+					String SpawnTPedMsg_other = Load_config.SpawnTPMsg_other_contents;
+					if (SpawnTPedMsg_other != null)
+					{
+						SpawnTPedMsg_other = changeMsg(SpawnTPedMsg_other, sender);
+						sender.sendMessage(this.ChatPrefix + SpawnTPedMsg_other);
+					}
+				}
+				return true;
 			}
 		} else if ((cmd.getName().equalsIgnoreCase("JoinLeaveAction")) || (cmd.getName().equalsIgnoreCase("jla")))
 		{
-			if (sender.hasPermission("JoinLeaveAction.cmd") || !(sender instanceof Player))
+			if (!sender.hasPermission("JoinLeaveAction.cmd") && (sender instanceof Player))
 			{
-				if (args.length == 0)
-				{
-					//jla(引数なし)。
-					JLACommandList(sender);
-					return true;
-				}
-				if (args.length > 0)
-				{
-					//jla ___(引数が何かしらある時)
-					if (args[0].equalsIgnoreCase("reload"))
-					{
-						if (sender.hasPermission("JoinLeaveAction.cmd.reload") || !(sender instanceof Player))
-						{
-
-/*
-							if (!this.file_config.exists())
-							{
-								Bukkit.getConsoleSender().sendMessage(this.ErroPrefix + ChatColor.YELLOW + "Makeing config.yml.");
-								setConfig();
-							}
-							reloadConfig();
-							try {
-								loadfile.load(file_isPlayerFirstJoin);
-							} catch (IOException
-									| InvalidConfigurationException e) {
-								e.printStackTrace();
-							}
-							sender.sendMessage(this.ChatPrefix + "config.yml is reloaded!");
-							return true;
-							*/
-								getConfigFile();
-								sender.sendMessage(this.ChatPrefix + "config.yml is reload!");
-								return true;
-						} else {
-							sender.sendMessage(this.ErroPrefix + "You don't have Permission to use reload.");
-						}
-					}
-					if (args[0].equalsIgnoreCase("test"))
-					{
-						if (sender.hasPermission("JoinLeaveAction.cmd.test") || !(sender instanceof Player))
-						{
-							if (args.length == 2)
-							{
-								if (args[1].equalsIgnoreCase("JoinMsg"))
-								{
-									doJLAJoinMsg(sender);
-									doJLAJoinTell(sender);
-									return true;
-								}
-								if (args[1].equalsIgnoreCase("LeaveMsg"))
-								{
-									doJLALeaveMsg(sender);
-									return true;
-								}
-								if (args[1].equalsIgnoreCase("Inv"))
-								{
-									if (sender instanceof Player)
-									{
-										Player player = (Player) sender;
-										player.getInventory().clear();
-										doJLAInv(player);
-										return true;
-									} else {
-										Bukkit.getConsoleSender().sendMessage(this.ChatPrefix + "You have to send from Player.");
-										return false;
-									}
-								}
-							}
-						} else {
-							sender.sendMessage(this.ErroPrefix + "You don't have Permission to use test.");
-						}
-						sender.sendMessage(this.ErroPrefix + "JoinMsg, LeaveMsg, Inv");
-						JLACommandList(sender);
-						return false;
-					}
-					if (args[0].equalsIgnoreCase("help"))
-					{
-						JLACommandList(sender);
-						return true;
-					}
-					sender.sendMessage(this.ErroPrefix + "Command is erro.");
-					JLACommandList(sender);
-					return false;
-				}
-			} else {
 				sender.sendMessage(this.ChatPrefix + "You don't have Permission.(JoinLeaveAction.cmd)");
 				return false;
 			}
+			if (args.length == 0)
+			{
+				//jla(引数なし)。
+				JLACommandList(sender);
+				return true;
+			}
+			if (args.length > 0)
+			{
+				//jla ___(引数が何かしらある時)
+				if (args[0].equalsIgnoreCase("reload"))
+				{
+					if (sender.hasPermission("JoinLeaveAction.cmd.reload") || !(sender instanceof Player))
+					{
+/*
+						if (!this.file_config.exists())
+						{
+							Bukkit.getConsoleSender().sendMessage(this.ErroPrefix + ChatColor.YELLOW + "Makeing config.yml.");
+							setConfig();
+						}
+						reload_config();
+						try {
+							loadfile.load(file_isPlayerFirstJoin);
+						} catch (IOException
+								| InvalidConfigurationException e) {
+							e.printStackTrace();
+						}
+						sender.sendMessage(this.ChatPrefix + "config.yml is reloaded!");
+						return true;
+*/
+							getConfigFile();
+							sender.sendMessage(this.ChatPrefix + "config.yml is reload!");
+							return true;
+					} else {
+						sender.sendMessage(this.ErroPrefix + "You don't have Permission to use reload.");
+					}
+				}
+				if (args[0].equalsIgnoreCase("test"))
+				{
+					if (!sender.hasPermission("JoinLeaveAction.cmd.test") && (sender instanceof Player))
+					{
+						sender.sendMessage(this.ErroPrefix + "You don't have Permission to use test.");
+						return false;
+					}
+					if (args.length == 2)
+					{
+						if (args[1].equalsIgnoreCase("JoinMsg"))
+						{
+							doJLAJoinMsg(sender);
+							doJLAJoinTell(sender);
+							return true;
+						}
+						if (args[1].equalsIgnoreCase("LeaveMsg"))
+						{
+							doJLALeaveMsg(sender);
+							return true;
+						}
+						if (args[1].equalsIgnoreCase("Inv"))
+						{
+							if (sender instanceof Player)
+							{
+								Player player = (Player) sender;
+								player.getInventory().clear();
+								doJLAInv(player);
+								return true;
+							} else {
+								Bukkit.getConsoleSender().sendMessage(this.ChatPrefix + "You have to send from Player.");
+								return false;
+							}
+						}
+					}
+					sender.sendMessage(this.ErroPrefix + "JoinMsg, LeaveMsg, Inv");
+					JLACommandList(sender);
+					return false;
+				}
+				if (args[0].equalsIgnoreCase("help"))
+				{
+					JLACommandList(sender);
+					return true;
+				}
+				sender.sendMessage(this.ErroPrefix + "Command is erro.");
+				JLACommandList(sender);
+				return false;
+			}
 		}
-		return false;
+	return false;
 	}
 
 
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event)
 	{
-		//ここ無理矢理感
-		if (loadconf.plugin.JoinMessage)
+		getServer().broadcastMessage("SS");
+		if (getConfig().getBoolean("Debug_mode"))
+		{
+			event.setJoinMessage("");
+			CommandSender sender = event.getPlayer();
+			sender.sendMessage(getConfigFile().getStringList("JoinMessage_contents").toString());
+//			doJLAJoinMsg(sender);
+//			doJLAJoinTell(sender);
+		}
+		getServer().broadcastMessage("FF");
+/*		if (Load_config.JoinMessage)
 		{
 			event.setJoinMessage("");
 			CommandSender sender = event.getPlayer();
 			doJLAJoinMsg(sender);
 			doJLAJoinTell(sender);
 		}
-		if (loadconf.plugin.JoinSpawn)
+		if (Load_config.JoinSpawn)
 		{
 			Player player = event.getPlayer();
-			if (loadconf.plugin.SpawnLoc().getWorld() == null) return;
-			if (loadconf.plugin.Debug_mode) player.sendMessage(this.ChatPrefix + this.loc.toString());
+			if (Load_config.SpawnLoc().getWorld() == null) return;
+			if (Load_config.Debug_mode) player.sendMessage(this.ChatPrefix + this.loc.toString());
 			player.teleport(this.loc);
 		}
-		if (loadconf.plugin.JoinInv)
+		if (Load_config.JoinInv)
 		{
 			Player player = event.getPlayer();
 			player.getInventory().clear();
 			doJLAInv(player);
 		}
-		if (loadconf.plugin.JoinMessage)
+		if (Load_config.JoinMessage)
 		{
 			if (isPlayerFirstJoin(event.getPlayer()))
 			{
 				CommandSender sender = event.getPlayer();
-				if (loadconf.plugin.Debug_mode) sender.sendMessage(this.ChatPrefix + "You are FistJoiner!");
+				if (Load_config.Debug_mode) sender.sendMessage(this.ChatPrefix + "You are FistJoiner!");
 				doJLAFirstJoinMsg(sender);
 				doJLAFirstJoinTell(sender);
 			}
-		}
+		}*/
 	}
 
 	@EventHandler
 	public void onPlayerLeave(PlayerQuitEvent event)
 	{
-		if (loadconf.plugin.LeaveMessage)
+		if (Load_config.LeaveMessage)
 		{
 			CommandSender sender = event.getPlayer();
 			event.setQuitMessage("");
