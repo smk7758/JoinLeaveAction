@@ -42,29 +42,38 @@ import org.bukkit.configuration.file.YamlConfiguration;
  */
 class FileIO {
 	Main plugin;
+	ConsoleLog cLog;
 	public FileIO(Main instance)
 	{
 		this.plugin = instance;
 	}
 
-	public boolean DebugIO(boolean Save, boolean enable){ //DebugIO(セーブするか, セーブ時の値)
+	/**
+	 * DebugModeのIO
+	 *
+	 * 読み込む時のenableは埋め文字
+	 *
+	 * @param save セーブをするか(true = Saveモード,false = Getモード)
+	 * @param enable セーブ時の値
+	 */
+	public boolean DebugIO(boolean save, boolean enable) {
 		File file = new File(plugin.folder + "config.yml");
 		FileConfiguration yaml = new YamlConfiguration();
 		try {
 			yaml.load(file);
 		} catch (FileNotFoundException | InvalidConfigurationException ex) {
-			plugin.cLog.info("該当するファイルがありませんでした。新規作成します");
+			cLog.info("該当するファイルがありませんでした。新規作成します");
 			SettingFiles(yaml, file, true);
 		} catch (IOException ex) {
-			plugin.cLog.info("ロードに失敗しました。");
+			cLog.info("ロードに失敗しました。");
 			return false;
 		}
-		if(Save){
+		if(save){
 			yaml.set("DebugMode", enable);
 			SettingFiles(yaml, file, true);
 			return true;
 		}
-		if(!Save){
+		if(!save){
 			enable = yaml.getBoolean("DebugMode");
 			return enable;
 		}
@@ -73,73 +82,103 @@ class FileIO {
 	//todo ##のリストごとにファイルを生成し直す。
 	//セーブロードをしやすくすることを念頭に置いたうえで、構築する。
 
-	public boolean BooleanIO(boolean Save, String FileName, String Path, boolean Type){ //Boolean(セーブするか, ファイル, パス, セーブ時の値) | FirstJoinのOutput専門。
+	/**
+	 * BooleanのIO
+	 *
+	 * 読み込む時のtypeは埋め文字
+	 *
+	 * @param save セーブをするか(true = Saveモード,false = Getモード)
+	 * @param FileName IOのファイル名
+	 * @param path 値へのパス
+	 * @param type セーブ時の値
+	 */
+	public boolean BooleanIO(boolean save, String FileName, String path, boolean type) {
 		File file = new File(plugin.folder + FileName + ".yml");
 		FileConfiguration yaml = new YamlConfiguration();
 		try {
 			yaml.load(file);
 		} catch (FileNotFoundException | InvalidConfigurationException ex) {
-			plugin.cLog.info("該当するファイルがありませんでした。新規作成します");
+			cLog.info("該当するファイルがありませんでした。新規作成します");
 			SettingFiles(yaml, file, true);
 		} catch (IOException ex) {
-			plugin.cLog.info("ロードに失敗しました。");
+			cLog.info("ロードに失敗しました。");
 			return false;
 		}
-		if(Save){
+		if(save){
 				//Saveモード。
-				yaml.set(Path, Type);
+				yaml.set(path, type);
 				return true;
 		} else {
-				Type = yaml.getBoolean(Path);
-				return Type;
+				type = yaml.getBoolean(path);
+				return type;
 		}
 	}
 
-	public String StringIO(int Mode, String FileName, String Path, String Type){ //StringIO(セーブするか, ファイル, パス, セーブ時の値)
+	/**
+	 * StringのIO
+	 *
+	 * 読み込む時のtypeは埋め文字(null)
+	 *
+	 * @param mode セーブをするか(0 = Saveモード, 1 = Getモード)
+	 * @param FileName IOのファイル名
+	 * @param path 値へのパス
+	 * @param type セーブ時の値
+	 */
+	public String StringIO(int mode, String FileName, String path, String type) {
 		File file = new File(plugin.folder + FileName + ".yml");
 		FileConfiguration yaml = new YamlConfiguration();
 		try {
 			yaml.load(file);
 		} catch (FileNotFoundException | InvalidConfigurationException ex) {
-			plugin.cLog.info("該当するファイルがありませんでした。新規作成します");
+			cLog.info("該当するファイルがありませんでした。新規作成します");
 			SettingFiles(yaml, file, true);
 		} catch (IOException ex) {
-			plugin.cLog.info("ロードに失敗しました。");
+			cLog.info("ロードに失敗しました。");
 			return null;
 		}
-		switch (Mode) { //Modeは上記Saveと同様Booleanではだめなのか。
+		switch (mode) { //Modeは上記Saveと同様Booleanではだめなのか。
 			case 0:
 				//Saveモード。
-				yaml.set(Path, Type);
+				yaml.set(path, type);
 				return null;
 			case 1:
-				Type = yaml.getString(Path);
-				return Type;
+				type = yaml.getString(path);
+				return type;
 			default:
 				return null;
 		}
 	}
 
-	public List<String> StringListIO(int Mode, String FileName, String Path, List<String> Type){ //StringIO(セーブするか, ファイル, パス, セーブ時の値)
+	/**
+	 * List<String>のIO
+	 *
+	 * 読み込む時のtypeは埋め文字(null)
+	 *
+	 * @param mode セーブをするか(0 = Saveモード, 1 = Getモード)
+	 * @param FileName IOのファイル名
+	 * @param path 値へのパス
+	 * @param type セーブ時の値
+	 */
+	public List<String> StringListIO(int mode, String FileName, String path, List<String> type) { //StringIO(セーブするか, ファイル, パス, セーブ時の値)
 		File file = new File(plugin.folder + FileName + ".yml");
 		FileConfiguration yaml = new YamlConfiguration();
 		try {
 			yaml.load(file);
 		} catch (FileNotFoundException | InvalidConfigurationException ex) {
-			plugin.cLog.info("該当するファイルがありませんでした。新規作成します");
+			cLog.info("該当するファイルがありませんでした。新規作成します");
 			SettingFiles(yaml, file, true);
 		} catch (IOException ex) {
-			plugin.cLog.info("ロードに失敗しました。");
+			cLog.info("ロードに失敗しました。");
 			return null;
 		}
-		switch (Mode) { //Modeは上記Saveと同様Booleanではだめなのか。
+		switch (mode) { //Modeは上記Saveと同様Booleanではだめなのか。
 			case 0:
 				//Saveモード。
-				yaml.set(Path, Type);
+				yaml.set(path, type);
 				return null;
 			case 1:
-				Type = yaml.getStringList(Path);
-				return Type;
+				type = yaml.getStringList(path);
+				return type;
 			default:
 				return null;
 		}
@@ -151,10 +190,10 @@ class FileIO {
 		try {
 			yaml.load(file);
 		} catch (FileNotFoundException | InvalidConfigurationException ex) {
-			plugin.cLog.info("該当するファイルがありませんでした。新規作成します");
+			cLog.info("該当するファイルがありませんでした。新規作成します");
 			SettingFiles(yaml, file, true);
 		} catch (IOException ex) {
-			plugin.cLog.info("ロードに失敗しました。");
+			cLog.info("ロードに失敗しました。");
 			return null;
 		}
 		if (Save) {//Saveモード。
@@ -176,25 +215,38 @@ class FileIO {
 			return tmp;
 		}
 	}*/
-	public Location LocationIO(boolean Save, String FileName, String Path, World world, short X, short Y, short Z, short Yaw, short Pitch){
+
+	/**
+	 * LocationのIO
+	 *
+	 * 読み込む時のworldは埋め文字(null)
+	 * 読み込む時のx y z yam pitchは埋め文字((short)0)
+	 *
+	 * @param save セーブをするか(true = Saveモード,false = Getモード)
+	 * @param FileName IOのファイル名
+	 * @param path 値へのパス
+	 * @param world セーブ時の値
+	 * @param x,y,z,yaw,pitch セーブ時の値
+	 */
+	public Location LocationIO(boolean save, String FileName, String path, World world, short x, short y, short z, short yaw, short pitch) {
 		File file = new File(plugin.folder + FileName + ".yml");
 		FileConfiguration yaml = new YamlConfiguration();
 		try {
 			yaml.load(file);
 		} catch (FileNotFoundException | InvalidConfigurationException ex) {
-			plugin.cLog.info("該当するファイルがありませんでした。新規作成します");
+			cLog.info("該当するファイルがありませんでした。新規作成します");
 			SettingFiles(yaml, file, true);
 		} catch (IOException ex) {
-			plugin.cLog.info("ロードに失敗しました。");
+			cLog.info("ロードに失敗しました。");
 			return null;
 		}
-		if (Save) {//Saveモード。
-			yaml.set(Path+".World",world);
-			yaml.set(Path+".X",X);
-			yaml.set(Path+".Y",Y);
-			yaml.set(Path+".Z",Z);
-			yaml.set(Path+".Yaw",Yaw);
-			yaml.set(Path+".Pitch",Pitch);
+		if (save) {//Saveモード。
+			yaml.set(path+".World",world);
+			yaml.set(path+".X",x);
+			yaml.set(path+".Y",y);
+			yaml.set(path+".Z",z);
+			yaml.set(path+".Yaw",yaw);
+			yaml.set(path+".Pitch",pitch);
 			return null;
 		} else {
 			World pl_world = Bukkit.getServer().getWorld(yaml.getString("SpawnLoc.World"));
@@ -203,41 +255,52 @@ class FileIO {
 			double pl_z = yaml.getDouble("SpawnLoc.z");
 			float pl_Yaw = yaml.getInt("SpaawnLoc.Yaw");
 			float pl_Pitch = yaml.getInt("SpawnLoc.Pitch");
-			if (pl_world == null)
-			{
-				plugin.cLog.warn(Path+".World is Null.");
-			}
-			Location loc = new Location(pl_world, pl_x, pl_y, pl_z, pl_Yaw, pl_Pitch);
-			return loc;
+			return new Location(pl_world, pl_x, pl_y, pl_z, pl_Yaw, pl_Pitch);
 		}
 	}
 
-	public HashMap<Object, Object> ItemIO(boolean Save, String FileName, String Path, HashMap<String, Object> ItemList) {
+	/**
+	 * ItemのIO
+	 *
+	 * 読み込む時のtypeは埋め文字(null)
+	 *
+	 * @param save セーブをするか(true = Saveモード,false = Getモード)
+	 * @param FileName IOのファイル名
+	 * @param path 値へのパス
+	 * @param ItemList セーブ時の値(HashMap|Item,ItemStackNumber,ItemName,ItemLore)
+	 */
+	public HashMap<String, Object> ItemIO(boolean save, String FileName, String path, HashMap<String, Object> ItemList) {
 		File file = new File(plugin.folder + FileName + ".yml");
 		FileConfiguration yaml = new YamlConfiguration();
 		try {
 			yaml.load(file);
 		} catch (FileNotFoundException | InvalidConfigurationException ex) {
-			plugin.cLog.info("該当するファイルがありませんでした。新規作成します");
+			cLog.info("該当するファイルがありませんでした。新規作成します");
 			SettingFiles(yaml, file, true);
 		} catch (IOException ex) {
-			plugin.cLog.info("ロードに失敗しました。");
+			cLog.info("ロードに失敗しました。");
 			return null;
 		}
-		if(Save) {//Saveモード。
-			yaml.set(Path+".Item",ItemList.get("Item"));
-			yaml.set(Path+".ItemStackNumber", ItemList.get("ItemStackNumber"));
-			if(yaml.contains("ItemName")) yaml.set(Path+".ItemName", ItemList.get("ItemName"));
-			if(yaml.contains("ItemLore")) yaml.set(Path+".ItemLore", ItemList.get("ItemLore"));
+		if(save) {//Saveモード。
+			yaml.set(path+".Item",ItemList.get("Item"));
+			yaml.set(path+".ItemStackNumber", ItemList.get("ItemStackNumber"));
+			if (ItemList.containsKey("ItemName")) yaml.set(path+".ItemName", ItemList.get("ItemName"));
+			if (ItemList.containsKey("ItemLore") && ItemList.get("ItemLore") instanceof List) yaml.set(path+".ItemLore", ItemList.get("ItemLore"));
+			//if(yaml.contains("ItemName")) yaml.set(path+".ItemName", ItemList.get("ItemName"));
+			//if(yaml.contains("ItemLore")) yaml.set(path+".ItemLore", ItemList.get("ItemLore"));
 			return null;
-		} else {
-			ItemList.put("Item", yaml.get(Path+".Item"));
-			ItemList.put("ItemStackNumber", yaml.get(Path+".ItemStackNumber"));
-			if(yaml.getBoolean(Path+".setItemName")) ItemList.put("ItemName", yaml.get(Path+".ItemName"));
-			if(yaml.getBoolean(Path+".setItemLore")) ItemList.put("ItemLore", yaml.get(Path+".ItemLore"));
+		} else {//Getモード
+			ItemList.put("Item", yaml.get(path+".Item"));
+			ItemList.put("ItemStackNumber", yaml.get(path+".ItemStackNumber"));
+			if(yaml.contains(path+".ItemName")) yaml.set(path+".ItemName", ItemList.get("ItemName"));
+			if(yaml.contains(path+".ItemLore") && yaml.isList(path+".ItemLore")) yaml.set(path+".ItemLore", ItemList.get("ItemLore"));
+			//if(yaml.getBoolean(path+".setItemName")) ItemList.put("ItemName", yaml.get(path+".ItemName"));
+			//if(yaml.getBoolean(path+".setItemLore")) ItemList.put("ItemLore", yaml.get(path+".ItemLore"));
 			return null;
+			//ここらへんの仕様が未確定
 		}
 	}
+
 	/**
 	 * ファイルの保存
 	 *
@@ -249,10 +312,8 @@ class FileIO {
 	 * @param file ファイル指定
 	 * @param save 上書きをするかリセットするか(trueで上書き)
 	 */
-	public void SettingFiles(FileConfiguration fileconfiguration, File file, boolean save)
-	{
-		if(!file.exists() || save)
-		{
+	public void SettingFiles(FileConfiguration fileconfiguration, File file, boolean save) {
+		if(!file.exists() || save) {
 			try {
 				fileconfiguration.save(file);
 			} catch (IOException e) {

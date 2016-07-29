@@ -1,6 +1,6 @@
 name: JoinLeaveAction
-main: my.smk.plugin.jla.Main
-version: 0.2.2.1
+main: com.github.smk7758.jla.Main
+version: 0.2.2.4
 author: smk7758
 website(my): http://smk7758.web.fc2.com/
 website(plugin): none
