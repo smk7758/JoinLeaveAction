@@ -1,5 +1,5 @@
 ##Others
-Debug_mode: false
+DebugMode: false
 #######################################
 ##FristJoin
 FirstJoin: true
@@ -9,24 +9,24 @@ FirstJoin_use_YAML: true
 #TP
 SpawnLoc:
   World: ''
-  x: '0.0'
-  y: '0.0'
-  z: '0.0'
+  X: '0.0'
+  Y: '0.0'
+  Z: '0.0'
   Yaw: '0.0'
   Pitch: '0.0'
 SpawnTPMsg_me: false
-SpawnTPMsg_me_contents: 'You tped to SpawnPoint'
+SpawnTPMsg_me_contents: 'You teleported to SpawnPoint'
 SpawnTPMsg_other: false
-SpawnTPMsg_other_contents: 'You tped to SpawnPoint by %Other%'
+SpawnTPMsg_other_contents: 'You teleported to SpawnPoint by %Other%'
 #Join
 JoinSpawn: true
 #FirstJoin
 FirstJoinSpawn: true
 FirstJoinLoc:
   World: ''
-  x: '0.0'
-  y: '0.0'
-  z: '0.0'
+  X: '0.0'
+  Y: '0.0'
+  Z: '0.0'
   Yaw: '0.0'
   Pitch: '0.0'
 #######################################
@@ -65,10 +65,10 @@ LeaveInv_clear: true
 #FirstJoin
 FirstJoinMessage: true
 FirstJoinMessage_contents:
-- '&a%Player% joind at the first time!'
+- '&a%Player% joined at the first time!'
 FirstJoinMessage_users:
   admin:
-  - '&aServer admin joind at the first time!'
+  - '&aServer admin joined at the first time!'
 FirstJoinMessage_tell: true
 FirstJoinMessage_tell_contents:
 - '&bWelcome to the Minecraft Server at the first time.'
@@ -76,10 +76,10 @@ FirstJoinMessage_to_came_user: true
 #Join
 JoinMessage: true
 JoinMessage_contents:
-- '&a%Player% joind.'
+- '&a%Player% joined.'
 JoinMessage_users:
   admin:
-  - '&aServer admin joind.'
+  - '&aServer admin joined.'
 JoinMessage_tell: true
 JoinMessage_tell_contents:
 - '&bWelcome to A Minecraft Server!'
@@ -87,9 +87,9 @@ JoinMessage_to_came_user: true
 #Leave
 LeaveMessage: true
 LeaveMessage_contents:
-- '&a%Player% leaved.'
+- '&a%Player% left.'
 LeaveMessage_users:
   admin:
-  - '&aServer admin leaved.'
+  - '&aServer admin left.'
 LeaveMessage_to_came_user: false
 #######################################
