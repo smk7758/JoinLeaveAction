@@ -23,7 +23,7 @@ public class CommandExcuter implements CommandExecutor {
 				return false;
 			}
 			Player player = (Player)sender;
-			plugin.setLoc(player, "SpawnLoc");
+			plugin.Util.getLocation(player, "SpawnLoc");
 			plugin.cLog.sendMessage(sender, "Spawn was set.");
 			return true;
 		} else if (cmd.getName().equalsIgnoreCase("spawn")) {
@@ -34,11 +34,11 @@ public class CommandExcuter implements CommandExecutor {
 					return false;
 				}
 				Player player = (Player)sender;
-				plugin.Teleport(player, plugin.LoadConfig.SpawnLoc());
+				plugin.Util.teleportPlayer(player, plugin.LoadConfig.SpawnLoc());
 				if (plugin.LoadConfig.SpawnTPMsg_me()) {
 					String SpawnTPedMsg_me = plugin.LoadConfig.SpawnTPMsg_me_contents();
 					if (SpawnTPedMsg_me != null) {
-						SpawnTPedMsg_me = plugin.changeMsg(SpawnTPedMsg_me, sender);
+						SpawnTPedMsg_me = plugin.Util.changeMsg(SpawnTPedMsg_me, sender);
 						sender.sendMessage(SpawnTPedMsg_me);
 					}
 				}
@@ -53,11 +53,11 @@ public class CommandExcuter implements CommandExecutor {
 					plugin.cLog.sendMessage(sender, "That player dose not exsist.", 2);
 					return false;
 				}
-				plugin.Teleport(player, plugin.LoadConfig.SpawnLoc());
+				plugin.Util.teleportPlayer(player, plugin.LoadConfig.SpawnLoc());
 				if (plugin.LoadConfig.SpawnTPMsg_other()) {
 					String SpawnTPedMsg_other = plugin.LoadConfig.SpawnTPMsg_other_contents();
 					if (SpawnTPedMsg_other != null) {
-						SpawnTPedMsg_other = plugin.changeMsg(SpawnTPedMsg_other, sender);
+						SpawnTPedMsg_other = plugin.Util.changeMsg(SpawnTPedMsg_other, sender);
 						sender.sendMessage(SpawnTPedMsg_other);
 					}
 				}
@@ -75,31 +75,6 @@ public class CommandExcuter implements CommandExecutor {
 			}
 			if (args.length > 0) {
 				//jla ___(引数が何かしらある時)
-//				if (args[0].equalsIgnoreCase("reload")) {
-//					if (!sender.hasPermission("JoinLeaveAction.cmd.reload") && (sender instanceof Player)) {
-//						plugin.cLog.sendMessage(sender, "You don't have Permission to use reload.", 2);
-//						return false;
-//					}
-//					/*
-//						if (!this.file_config.exists())
-//						{
-//							Bukkit.getConsoleSender().sendMessage(this.ErroPrefix + ChatColor.YELLOW + "Makeing config.yml.");
-//							setConfig();
-//						}
-//						reload_config();
-//						try {
-//							loadfile.load(file_isPlayerFirstJoin);
-//						} catch (IOException
-//								| InvalidConfigurationException e) {
-//							e.printStackTrace();
-//						}
-//						sender.sendMessage(this.ChatPrefix + "config.yml is reloaded!");
-//						return true;
-//					 */
-//					plugin.reloadConfig();
-//					plugin.cLog.sendMessage(sender, "config.yml is reload!");
-//					return true;
-//				}
 				if (args[0].equalsIgnoreCase("test") && (sender instanceof Player)) {
 					if (!sender.hasPermission("JoinLeaveAction.cmd.test")) {
 						plugin.cLog.sendMessage(sender, "You don't have Permission to use test.", 2);
@@ -107,12 +82,12 @@ public class CommandExcuter implements CommandExecutor {
 					}
 					if (args.length > 1) {
 						if (args[1].equalsIgnoreCase("JoinSpawn")) {
-							plugin.Teleport((Player) sender, plugin.LoadConfig.SpawnLoc());
+							plugin.Util.teleportPlayer((Player) sender, plugin.LoadConfig.SpawnLoc());
 							return true;
 						}
 						if (args[1].equalsIgnoreCase("JoinMsg")) {
 							plugin.JoinMsg(sender);
-							plugin.tellMsg(sender, plugin.LoadConfig.JoinMessage_contents());
+							plugin.Util.tellMsg(sender, plugin.LoadConfig.JoinMessage_contents());
 							return true;
 						}
 						if (args[1].equalsIgnoreCase("JoinInv")) {

@@ -36,11 +36,6 @@ public class ConsoleLog {
 		sender.sendMessage(plugin.PluginPrefix + msg);
 	}
 
-// Playerである意味が無い気がする。sender型で代替化。
-//	public void Message(Player p, String msg) {
-//		p.sendMessage(PluginPrefix + msg);
-//	}
-
 	/**
 	 * メッセージを送る
 	 *
@@ -58,24 +53,6 @@ public class ConsoleLog {
 		if(type==3) if(plugin.DebugMode) sender.sendMessage(plugin.cPrefix + "[Debug]" + msg);
 		else sender.sendMessage(plugin.PluginPrefix + msg);
 	}
-
-// Playerである意味が無い気がする。sender型で代替化。
-//	/**
-//	 * メッセージを送る
-//	 *
-//	 * @param sender 宛先
-//	 * @param msg メッセージ
-//	 * @param type 0 PluginPrefix
-//	 * @param type 1 cPrefix pInfo
-//	 * @param type 2 cPrefix pError
-//	 * @param type 3 cPrefix [debug] | DebugMode
-//	 */
-//	public void Message(Player p, String msg,int type) {
-//		if(type==0) p.sendMessage(PluginPrefix + msg);
-//		else if(type==1) p.sendMessage(cPrefix + pInfo + msg);
-//		else if(type==2) p.sendMessage(cPrefix + pError + msg);
-//		else if(type==3) if(plugin.DebugMode) p.sendMessage(cPrefix + "[debug]" + msg);
-//	}
 
 	public void sendBroadCast(String msg) {
 		plugin.getServer().broadcastMessage(plugin.PluginPrefix + msg);
