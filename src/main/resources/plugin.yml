@@ -1,6 +1,6 @@
 name: JoinLeaveAction
 main: com.github.smk7758.jla.Main
-version: 0.2.2.4
+version: 0.2.2.6
 author: smk7758
 permissions:
   JoinLeaveAction.*:

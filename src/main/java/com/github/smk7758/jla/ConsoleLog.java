@@ -8,7 +8,6 @@ package com.github.smk7758.jla;
 import java.util.logging.Logger;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.ChatColor;
 
 public class ConsoleLog {
 	private Main plugin;
@@ -17,27 +16,24 @@ public class ConsoleLog {
 	}
 
 	public static final Logger log = Logger.getLogger("Minecraft");
-	public String PluginPrefix = "[" + ChatColor.GREEN + plugin.PluginName + ChatColor.RESET +"] ";
-	public String cPrefix = "["+ plugin.PluginName +"] ";
-	public String pInfo =  "[" + ChatColor.RED+ "Info" + ChatColor.RESET+"] ";
-	public String pError = "[" + ChatColor.RED+ "ERROR" + ChatColor.RESET+"] ";
+
 
 	public void info(String msg) {
-		log.info(this.cPrefix + msg);
+		log.info(plugin.cPrefix + msg);
 		//動作に支障が無く情報を出すだけで良い時
 	}
 
 	public void debug(String msg) {
-		if(plugin.DebugMode) log.info(cPrefix + "[Debug] " +msg);
+		if(plugin.DebugMode) log.info(plugin.cPrefix + "[Debug] " +msg);
 	}
 
 	public void warn(String msg) {
-		log.warning(cPrefix + msg);
+		log.warning(plugin.cPrefix + msg);
 		//動作に支障がある時
 	}
 
 	public void sendMessage(CommandSender sender, String msg) {
-		sender.sendMessage(PluginPrefix + msg);
+		sender.sendMessage(plugin.PluginPrefix + msg);
 	}
 
 // Playerである意味が無い気がする。sender型で代替化。
@@ -56,11 +52,11 @@ public class ConsoleLog {
 	 * @param type 3 cPrefix [Debug] | DebugMode
 	 */
 	public void sendMessage(CommandSender sender, String msg,int type) {
-		if(type==0) sender.sendMessage(PluginPrefix + msg);
-		if(type==1) sender.sendMessage(cPrefix + pInfo + msg);
-		if(type==2) sender.sendMessage(cPrefix + pError + msg);
-		if(type==3) if(plugin.DebugMode) sender.sendMessage(cPrefix + "[Debug]" + msg);
-		else sender.sendMessage(PluginPrefix + msg);
+		if(type==0) sender.sendMessage(plugin.PluginPrefix + msg);
+		if(type==1) sender.sendMessage(plugin.cPrefix + plugin.pInfo + msg);
+		if(type==2) sender.sendMessage(plugin.cPrefix + plugin.pError + msg);
+		if(type==3) if(plugin.DebugMode) sender.sendMessage(plugin.cPrefix + "[Debug]" + msg);
+		else sender.sendMessage(plugin.PluginPrefix + msg);
 	}
 
 // Playerである意味が無い気がする。sender型で代替化。
@@ -82,6 +78,6 @@ public class ConsoleLog {
 //	}
 
 	public void sendBroadCast(String msg) {
-		plugin.getServer().broadcastMessage(PluginPrefix + msg);
+		plugin.getServer().broadcastMessage(plugin.PluginPrefix + msg);
 	}
 }

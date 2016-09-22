@@ -7,7 +7,6 @@ import java.io.File;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,14 +19,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Main extends JavaPlugin implements Listener {
 	public FileIO FileIO = new FileIO(this);
-	public LoadConfig LoadConfig = new LoadConfig(this);
 	public ConsoleLog cLog = new ConsoleLog(this);
-
-
+	public LoadConfig LoadConfig = new LoadConfig(this);
 
 	public String PluginName = getDescription().getName();
 	public String folder = getDataFolder() + File.separator;
 	public boolean DebugMode = false;
+	public String PluginPrefix = "[" + ChatColor.GREEN + PluginName + ChatColor.RESET +"] ";
+	public String cPrefix = "["+ PluginName +"] ";
+	public String pInfo =  "[" + ChatColor.RED+ "Info" + ChatColor.RESET+"] ";
+	public String pError = "[" + ChatColor.RED+ "ERROR" + ChatColor.RESET+"] ";
 
 	@Override
 	public void onEnable() {
@@ -35,7 +36,9 @@ public class Main extends JavaPlugin implements Listener {
 		getCommand("setspawn").setExecutor(new CommandExcuter(this));
 		getCommand("spawn").setExecutor(new CommandExcuter(this));
 		getCommand("JoinLeaveAction").setExecutor(new CommandExcuter(this));
+		saveDefaultConfig();
 		saveConfig();
+//		FileIO.makeSettingFiles("config");
 		/*
 		try {
 			conf = getConfig(null, "config.yml");
@@ -86,79 +89,69 @@ public class Main extends JavaPlugin implements Listener {
 //		reloadConfig();
 //	}
 
-	public void setLoc(Player p, String type) {
-		World world = p.getWorld();
-		Short x = (short)p.getLocation().getX();
-		Short y = (short)p.getLocation().getY();
-		Short z = (short)p.getLocation().getZ();
-		Short yaw = (short)p.getLocation().getYaw();
-		Short pitch = (short)p.getLocation().getPitch();
+	public void setLoc(Player player, String type) {
+		String world = player.getWorld().getName();
+		double x = player.getLocation().getX();
+		double y = player.getLocation().getY();
+		double z = player.getLocation().getZ();
+		float yaw = player.getLocation().getYaw();
+		float pitch = player.getLocation().getPitch();
 		FileIO.LocationIO(true, "config", type, world, x, y, z, yaw, pitch);
-		cLog.sendMessage(p, "Player:" + p.getName(), 3);
-		cLog.sendMessage(p, "World:" + world, 3);
-		cLog.sendMessage(p, "X:" + String.valueOf(x), 3);
-		cLog.sendMessage(p, "Y:" + String.valueOf(y), 3);
-		cLog.sendMessage(p, "Z:" + String.valueOf(z), 3);
-		cLog.sendMessage(p, "Yaw:" + String.valueOf(yaw), 3);
-		cLog.sendMessage(p, "Pitch:" + String.valueOf(pitch), 3);
+		cLog.sendMessage(player, "Player:" + player.getName(), 3);
+		cLog.sendMessage(player, "World:" + world, 3);
+		cLog.sendMessage(player, "X:" + x, 3);
+		cLog.sendMessage(player, "Y:" + y, 3);
+		cLog.sendMessage(player, "Z:" + z, 3);
+		cLog.sendMessage(player, "Yaw:" + yaw, 3);
+		cLog.sendMessage(player, "Pitch:" + pitch, 3);
 	}
 
-	public void Teleport(Player p, Location loc) {
-		cLog.sendMessage(p, loc.toString(), 3);
+	public void Teleport(Player player, Location loc) {
+		cLog.sendMessage(player, loc.toString(), 3);
 		if (loc.getWorld() == null) {
 			cLog.warn("Teleport did not work because the World is null.");
+			cLog.sendMessage(player, "Teleport did not work because the World is null.", 2);
 			return;
 		}
-		p.teleport(loc);
+		player.teleport(loc);
 	}
 
-	public void JoinInv(Player p) {
-		for (int i = 1; i <= 9; i++) {
+	public void JoinInv(Player player) {
+		for (int i = 0; i <= 8; i++) {
 			String Item = (String)LoadConfig.JoinInv_contents(i).get("Item");
 			int ItemStackNumber = (Integer) LoadConfig.JoinInv_contents(i).get("ItemStackNumber");
 			String ItemName = (String)LoadConfig.JoinInv_contents(i).get("ItemName");
 			@SuppressWarnings("unchecked")
 			List<String> ItemLore = (List<String>)LoadConfig.JoinInv_contents(i).get("ItemLore"); //取得時に検査済み
+
 			Material ItemMaterial = Material.getMaterial(Item);
-			int SlotNumber = i--; //0の時がInvの左下となるため--する。
-			cLog.sendMessage(p, "SlotNumber(InFor/config): "+i+" SlotNumber(Inv): "+SlotNumber,3);
-			cLog.sendMessage(p, "Item:"+Item+" ItemStackNumber:"+ItemStackNumber+" ItemName:"+ItemName+" ItemLore:"+ItemLore+" ItemMaterial:"+ItemMaterial, 3);
+			cLog.sendMessage(player, "SlotNumber(InFor/config): "+i,3);
+			cLog.sendMessage(player, "Item:"+Item+" ItemStackNumber:"+ItemStackNumber+" ItemName:"+ItemName+" ItemLore:"+ItemLore+" ItemMaterial:"+ItemMaterial, 3);
 			if (Item == null || ItemStackNumber == 0 || ItemMaterial == null) {
-				if (LoadConfig.JoinInv_null_erro) {
+				if (LoadConfig.JoinInv_null_erro()) {
 					cLog.info("config.yml - Inv's \""+i+"\" is Null. But this is not a error.");
 					continue;
 				}
-				cLog.sendMessage(p, "config.yml - Inv's \""+i+"\" is Null. But this is not a error.", 3);
+				cLog.sendMessage(player, "config.yml - Inv's \""+i+"\" is Null. But this is not a error.", 3);
 				continue;
 			}
 			ItemStack ItemStack = new ItemStack(ItemMaterial, ItemStackNumber);
 			if (ItemName != null) { //ItemNameを設定する
-				ItemName = changeMsg(ItemName, p);
+				ItemName = changeMsg(ItemName, player);
 				ItemMeta ItemMeta = ItemStack.getItemMeta();
 				ItemMeta.setDisplayName(ItemName);
 				ItemStack.setItemMeta(ItemMeta);
 			}
 			if (ItemLore != null) { //ItemLoreを設定する
-				List<String> a = new ArrayList<String>();
-				for (String ItemLore_ : ItemLore) {
-					a.add(changeMsg(ItemLore_, p));
+				List<String> ItemLore_List = new ArrayList<String>();
+				for (String ItemLore_String : ItemLore) {
+					ItemLore_List.add(changeMsg(ItemLore_String, player));
 				}
 				ItemMeta ItemMeta = ItemStack.getItemMeta();
-				ItemMeta.setLore(a);
+				ItemMeta.setLore(ItemLore_List);
 				ItemStack.setItemMeta(ItemMeta);
 			}
-			p.getInventory().setItem(SlotNumber, ItemStack);
-			//何であるかわからない
-//			if (LoadConfig.DebugMode)
-//			{
-//				cLog.Message(p,"SlotNumber: " + SlotNumber, 3);
-//				if (ItemStack.getItemMeta().getLore() == null)
-//				{
-//					cLog.Message(p, "Lore == null");
-//				} else {
-//					cLog.Message(p, ItemStack.getItemMeta().getLore().toString());
-//				}
-//			}
+			player.getInventory().setItem(i, ItemStack);
 		}
 	}
 
@@ -169,9 +162,9 @@ public class Main extends JavaPlugin implements Listener {
 			//user_msgが存在しない時
 			for (Player online_player : getServer().getOnlinePlayers()) {
 				//共通メッセージをやる所
-				if (!LoadConfig.JoinMessage_to_came_user && online_player == sender) continue;
+				if (!LoadConfig.JoinMessage_to_came_user() && online_player == sender) continue;
 					//来た人にメッセージを送るか」が有効になっていない時、online_player(メッセージ送信を順次行う枠) == 送った人 を飛ばす
-				for (String msg : LoadConfig.JoinMessage_contents) {
+				for (String msg : LoadConfig.JoinMessage_contents()) {
 					msg = changeMsg(msg, sender);
 					online_player.sendMessage(msg);
 				}
@@ -179,7 +172,7 @@ public class Main extends JavaPlugin implements Listener {
 		} else {
 			//user_msgをやる所(user_msgが存在する)
 			for (Player online_player : getServer().getOnlinePlayers()) {
-				if (!LoadConfig.JoinMessage_to_came_user && online_player == sender) continue;
+				if (!LoadConfig.JoinMessage_to_came_user() && online_player == sender) continue;
 				//来た人にメッセージを送るか」が有効になっていない時、online_player(メッセージ送信を順次行う枠) == 送った人 を飛ばす
 				for (String msg : LoadConfig.JoinMessage_users(pS)) {
 					msg = changeMsg(msg, sender);
@@ -196,9 +189,9 @@ public class Main extends JavaPlugin implements Listener {
 			//user_msgが存在しない時
 			for (Player online_player : getServer().getOnlinePlayers()) {
 				//共通メッセージをやる所
-				if (!LoadConfig.LeaveMessage_to_came_user && online_player == sender) continue;
+				if (!LoadConfig.LeaveMessage_to_came_user() && online_player == sender) continue;
 					//来た人にメッセージを送るか」が有効になっていない時、online_player(メッセージ送信を順次行う枠) == 送った人 を飛ばす
-				for (String msg : LoadConfig.LeaveMessage_contents) {
+				for (String msg : LoadConfig.LeaveMessage_contents()) {
 					msg = changeMsg(msg, sender);
 					online_player.sendMessage(msg);
 				}
@@ -206,7 +199,7 @@ public class Main extends JavaPlugin implements Listener {
 		} else {
 			//user_msgをやる所(user_msgが存在する)
 			for (Player online_player : getServer().getOnlinePlayers()) {
-				if (!LoadConfig.LeaveMessage_to_came_user && online_player == sender) continue;
+				if (!LoadConfig.LeaveMessage_to_came_user() && online_player == sender) continue;
 					//来た人にメッセージを送るか」が有効になっていない時、online_player(メッセージ送信を順次行う枠) == 送った人 を飛ばす
 				for (String msg : LoadConfig.LeaveMessage_users(pS)) {
 					msg = changeMsg(msg, sender);
@@ -226,29 +219,29 @@ public class Main extends JavaPlugin implements Listener {
 	public String changeMsg(String msg, CommandSender sender) {//Msgの中のテンプレがあったら変更
 		msg = msg.replaceAll("%Player%", sender.getName());
 		if (sender instanceof Player) {
-			Player p = (Player)sender;
-			msg = msg.replaceAll("%World%", p.getWorld().getName());
+			Player player = (Player)sender;
+			msg = msg.replaceAll("%World%", player.getWorld().getName());
 		}
 		msg = ChatColor.translateAlternateColorCodes('&', msg);
 		return msg;
 	}
 
-	public boolean isFirstJoin(Player p) {
+	public boolean isFirstJoin(Player player) {
 	//ifFisrtJoin.yamlをFileIOへ
-	if (!LoadConfig.FirstJoin_use_YAML && !p.hasPlayedBefore()) {//Firstの時
-		cLog.sendMessage(p, "isPlayerFirstJoin1", 3);
+	if (!LoadConfig.FirstJoin_use_YAML() && !player.hasPlayedBefore()) {//Firstの時
+		cLog.sendMessage(player, "isPlayerFirstJoin1", 3);
 		return true;
 	}
-	if (LoadConfig.FirstJoin_use_YAML) {//YAMLを使用する時
-		List<String> players = FileIO.StringListIO(1, "isFirstJoin", "Players", null);
+	if (LoadConfig.FirstJoin_use_YAML()) {//YAMLを使用する時
+		List<String> players = FileIO.StringListIO(false, "isFirstJoin", "Players", null);
 		for (String s : players) {
-			if (s.equals(p.getName())) return false;
+			if (s.equals(player.getName())) return false;
 		}
-		cLog.sendMessage(p, "isFirstJoin2", 3);
-		players.add(p.getName());//Firstのプレーヤーを追加
-		FileIO.StringListIO(0, "isFirstJoin", "Players", players);
+		cLog.sendMessage(player, "isFirstJoin2", 3);
+		players.add(player.getName());//Firstのプレーヤーを追加
+		FileIO.StringListIO(true, "isFirstJoin", "Players", players);
 	}
-	cLog.sendMessage(p,"isPlayerFirstJoin == false",3);
+	cLog.sendMessage(player,"isPlayerFirstJoin == false",3);
 	return false;
 }
 
@@ -259,9 +252,9 @@ public class Main extends JavaPlugin implements Listener {
 			//user_msgが存在しない時
 			for (Player online_player : getServer().getOnlinePlayers()) {
 				//共通メッセージをやる所
-				if (!LoadConfig.FirstJoinMessage_to_came_user && online_player == sender) continue;
+				if (!LoadConfig.FirstJoinMessage_to_came_user() && online_player == sender) continue;
 					//来た人にメッセージを送るか」が有効になっていない時、online_player(メッセージ送信を順次行う枠) == 送った人 を飛ばす
-				for (String msg : LoadConfig.FirstJoinMessage_contents) {
+				for (String msg : LoadConfig.FirstJoinMessage_contents()) {
 					msg = changeMsg(msg, sender);
 					online_player.sendMessage(msg);
 				}
@@ -269,7 +262,7 @@ public class Main extends JavaPlugin implements Listener {
 		} else {
 			//user_msgをやる所(user_msgが存在する)
 			for (Player online_player : getServer().getOnlinePlayers()) {
-				if (!LoadConfig.JoinMessage_to_came_user && online_player == sender) continue;
+				if (!LoadConfig.JoinMessage_to_came_user() && online_player == sender) continue;
 				//来た人にメッセージを送るか」が有効になっていない時、online_player(メッセージ送信を順次行う枠) == 送った人 を飛ばす
 				for (String msg : LoadConfig.JoinMessage_users(pS)) {
 					msg = changeMsg(msg, sender);
@@ -367,47 +360,47 @@ public class Main extends JavaPlugin implements Listener {
 
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		Player p = event.getPlayer();
-		cLog.sendMessage(p, "Start: onPlayerJoin | by Player:" + event.getPlayer().getName(), 3);
-		if (LoadConfig.JoinMessage)
+		Player player = event.getPlayer();
+		cLog.sendMessage(player, "Start: onPlayerJoin | by Player:" + event.getPlayer().getName(), 3);
+		if (LoadConfig.JoinMessage())
 		{
 			event.setJoinMessage("");
-			JoinMsg(p);
-			tellMsg(p, LoadConfig.JoinMessage_tell_contents);
+			JoinMsg(player);
+			tellMsg(player, LoadConfig.JoinMessage_tell_contents());
 		}
-		if (LoadConfig.JoinSpawn)
+		if (LoadConfig.JoinSpawn())
 		{
 			if (LoadConfig.SpawnLoc().getWorld() == null) return;
-			cLog.sendMessage(p, LoadConfig.SpawnLoc().toString(), 3);
-			p.teleport(LoadConfig.SpawnLoc());
+			cLog.sendMessage(player, LoadConfig.SpawnLoc().toString(), 3);
+			player.teleport(LoadConfig.SpawnLoc());
 		}
-		if (LoadConfig.JoinInv)
+		if (LoadConfig.JoinInv())
 		{
-			p.getInventory().clear();
-			JoinInv(p);
+			player.getInventory().clear();
+			JoinInv(player);
 		}
-		if (LoadConfig.JoinMessage)
+		if (LoadConfig.JoinMessage())
 		{
 			if (isFirstJoin(event.getPlayer()))
 			{
-				cLog.sendMessage(p, "You are FistJoiner!", 3);
-				FirstJoinMsg(p);
-				tellMsg(p, LoadConfig.FirstJoinMessage_contents);
+				cLog.sendMessage(player, "You are FistJoiner!", 3);
+				FirstJoinMsg(player);
+				tellMsg(player, LoadConfig.FirstJoinMessage_contents());
 			}
 		}
-		cLog.sendMessage(p, "Finish: onPlayerJoin | by Player:" + event.getPlayer().getName(), 3);
+		cLog.sendMessage(player, "Finish: onPlayerJoin | by Player:" + event.getPlayer().getName(), 3);
 	}
 
 	@EventHandler
 	public void onPlayerLeave(PlayerQuitEvent event) {
-		Player p = event.getPlayer();
-		cLog.sendMessage(p, "Start: onPlayerLeave | by Player:" + event.getPlayer().getName(), 3);
-		if (LoadConfig.LeaveMessage)
+		Player player = event.getPlayer();
+		cLog.sendMessage(player, "Start: onPlayerLeave | by Player:" + event.getPlayer().getName(), 3);
+		if (LoadConfig.LeaveMessage())
 		{
 			event.setQuitMessage("");
-			LeaveMsg(p);
+			LeaveMsg(player);
 		}
-		cLog.sendMessage(p, "Finish: onPlayerLeave | by Player:" + event.getPlayer().getName(), 3);
+		cLog.sendMessage(player, "Finish: onPlayerLeave | by Player:" + event.getPlayer().getName(), 3);
 	}
 }
 
