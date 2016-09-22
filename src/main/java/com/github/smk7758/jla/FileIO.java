@@ -24,7 +24,6 @@
 package com.github.smk7758.jla;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -40,12 +39,10 @@ import org.bukkit.configuration.file.YamlConfiguration;
  *
  * @author kazu0617<kazuyagi19990617@hotmail.co.jp>
  */
-class FileIO {
-	Main plugin;
-	ConsoleLog cLog;
-	public FileIO(Main instance)
-	{
-		this.plugin = instance;
+public class FileIO {
+	private Main plugin;
+	public FileIO(Main instance) {
+		plugin = instance;
 	}
 
 	/**
@@ -61,11 +58,12 @@ class FileIO {
 		FileConfiguration yaml = new YamlConfiguration();
 		try {
 			yaml.load(file);
-		} catch (FileNotFoundException | InvalidConfigurationException ex) {
-			cLog.info("該当するファイルがありませんでした。新規作成します");
+//			} catch (FileNotFoundException | InvalidConfigurationException ex) {
+			} catch (InvalidConfigurationException ex) {
+			plugin.cLog.info("該当するファイルがありませんでした。新規作成します");
 			SettingFiles(yaml, file, true);
 		} catch (IOException ex) {
-			cLog.info("ロードに失敗しました。");
+			plugin.cLog.info("ロードに失敗しました。");
 			return false;
 		}
 		if(save){
@@ -97,11 +95,12 @@ class FileIO {
 		FileConfiguration yaml = new YamlConfiguration();
 		try {
 			yaml.load(file);
-		} catch (FileNotFoundException | InvalidConfigurationException ex) {
-			cLog.info("該当するファイルがありませんでした。新規作成します");
+//			} catch (FileNotFoundException | InvalidConfigurationException ex) {
+			} catch (InvalidConfigurationException ex) {
+			plugin.cLog.info("該当するファイルがありませんでした。新規作成します");
 			SettingFiles(yaml, file, true);
 		} catch (IOException ex) {
-			cLog.info("ロードに失敗しました。");
+			plugin.cLog.info("ロードに失敗しました。");
 			return false;
 		}
 		if(save){
@@ -129,11 +128,12 @@ class FileIO {
 		FileConfiguration yaml = new YamlConfiguration();
 		try {
 			yaml.load(file);
-		} catch (FileNotFoundException | InvalidConfigurationException ex) {
-			cLog.info("該当するファイルがありませんでした。新規作成します");
+//			} catch (FileNotFoundException | InvalidConfigurationException ex) {
+			} catch (InvalidConfigurationException ex) {
+			plugin.cLog.info("該当するファイルがありませんでした。新規作成します");
 			SettingFiles(yaml, file, true);
 		} catch (IOException ex) {
-			cLog.info("ロードに失敗しました。");
+			plugin.cLog.info("ロードに失敗しました。");
 			return null;
 		}
 		switch (mode) { //Modeは上記Saveと同様Booleanではだめなのか。
@@ -164,11 +164,12 @@ class FileIO {
 		FileConfiguration yaml = new YamlConfiguration();
 		try {
 			yaml.load(file);
-		} catch (FileNotFoundException | InvalidConfigurationException ex) {
-			cLog.info("該当するファイルがありませんでした。新規作成します");
+//			} catch (FileNotFoundException | InvalidConfigurationException ex) {
+			} catch (InvalidConfigurationException ex) {
+			plugin.cLog.info("該当するファイルがありませんでした。新規作成します");
 			SettingFiles(yaml, file, true);
 		} catch (IOException ex) {
-			cLog.info("ロードに失敗しました。");
+			plugin.cLog.info("ロードに失敗しました。");
 			return null;
 		}
 		switch (mode) { //Modeは上記Saveと同様Booleanではだめなのか。
@@ -190,10 +191,10 @@ class FileIO {
 		try {
 			yaml.load(file);
 		} catch (FileNotFoundException | InvalidConfigurationException ex) {
-			cLog.info("該当するファイルがありませんでした。新規作成します");
+			plugin.cLog.info("該当するファイルがありませんでした。新規作成します");
 			SettingFiles(yaml, file, true);
 		} catch (IOException ex) {
-			cLog.info("ロードに失敗しました。");
+			plugin.cLog.info("ロードに失敗しました。");
 			return null;
 		}
 		if (Save) {//Saveモード。
@@ -233,11 +234,12 @@ class FileIO {
 		FileConfiguration yaml = new YamlConfiguration();
 		try {
 			yaml.load(file);
-		} catch (FileNotFoundException | InvalidConfigurationException ex) {
-			cLog.info("該当するファイルがありませんでした。新規作成します");
+//			} catch (FileNotFoundException | InvalidConfigurationException ex) {
+			} catch (InvalidConfigurationException ex) {
+			plugin.cLog.info("該当するファイルがありませんでした。新規作成します");
 			SettingFiles(yaml, file, true);
 		} catch (IOException ex) {
-			cLog.info("ロードに失敗しました。");
+			plugin.cLog.info("ロードに失敗しました。");
 			return null;
 		}
 		if (save) {//Saveモード。
@@ -274,11 +276,12 @@ class FileIO {
 		FileConfiguration yaml = new YamlConfiguration();
 		try {
 			yaml.load(file);
-		} catch (FileNotFoundException | InvalidConfigurationException ex) {
-			cLog.info("該当するファイルがありませんでした。新規作成します");
+//			} catch (FileNotFoundException | InvalidConfigurationException ex) {
+			} catch (InvalidConfigurationException ex) {
+			plugin.cLog.info("該当するファイルがありませんでした。新規作成します");
 			SettingFiles(yaml, file, true);
 		} catch (IOException ex) {
-			cLog.info("ロードに失敗しました。");
+			plugin.cLog.info("ロードに失敗しました。");
 			return null;
 		}
 		if(save) {//Saveモード。
