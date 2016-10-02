@@ -35,6 +35,9 @@ permissions:
   JoinLeaveAction.cmd.reload:
     description: Allows the reload.
     default: false
+  JoinLeaveAction.cmd.Debug:
+    description: Allows the test.
+    default: false
   JoinLeaveAction.cmd.test:
     description: Allows the test.
     default: false

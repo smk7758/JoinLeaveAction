@@ -9,8 +9,18 @@ import org.bukkit.entity.Player;
 
 public class Util {
 	private Main plugin;
+
 	public Util(Main instance) {
 		plugin = instance;
+	}
+
+	public void sendCommandList(CommandSender sender) {
+		plugin.cLog.sendMessage(sender, "Command List!!", 0);
+		plugin.cLog.sendMessage(sender, "TP you:/spawn | TP <Player>:/spawn <Player>", 0);
+		plugin.cLog.sendMessage(sender, "Set spawn:/setspawn", 0);
+		plugin.cLog.sendMessage(sender, "Long: /JoinLeaveAction | Short: /jla", 0);
+		plugin.cLog.sendMessage(sender, "/jla reload", 0);
+		plugin.cLog.sendMessage(sender, "/jla test <testing_thing_name>", 0);
 	}
 
 	public void getLocation(Player player, String type) {
@@ -40,17 +50,17 @@ public class Util {
 		player.teleport(loc);
 	}
 
-	public void tellMsg (CommandSender sender, List<String> msgs) {
+	public void sendMsgs(CommandSender sender, List<String> msgs) {
 		for (String msg : msgs) {
 			msg = changeMsg(msg, sender);
 			sender.sendMessage(msg);
 		}
 	}
 
-	public String changeMsg(String msg, CommandSender sender) {//Msgの中のテンプレがあったら変更
+	public String changeMsg(String msg, CommandSender sender) {// Msgの中のテンプレがあったら変更
 		msg = msg.replaceAll("%Player%", sender.getName());
 		if (sender instanceof Player) {
-			Player player = (Player)sender;
+			Player player = (Player) sender;
 			msg = msg.replaceAll("%World%", player.getWorld().getName());
 		}
 		msg = ChatColor.translateAlternateColorCodes('&', msg);
