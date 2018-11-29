@@ -39,16 +39,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * @author kazu0617<kazuyagi19990617@hotmail.co.jp>
  */
 public class FileIO {
-	// private Main plugin;
-	// public FileIO(Main instance) {
-	// plugin = instance;
-	// }
-	// private static final FileIO instance = new FileIO();
-	// private FileIO() {
-	// }
-	// public static FileIO getInstance() {
-	// return instance;
-	// }
 	private Main plugin;
 
 	public FileIO(Main instance) {
